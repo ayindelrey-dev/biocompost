@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KomposKita - Solusi Pengolahan Sampah Organik</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        earth: {
+                            50: '#f6f8f5',
+                            100: '#eaf0e6',
+                            200: '#d7e2cf',
+                            300: '#b8cca9',
+                            400: '#94b080',
+                            500: '#73945d',
+                            600: '#597746',
+                            700: '#465e37',
+                            800: '#394c2d',
+                            900: '#303f26',
+                            950: '#182312',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-earth-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-earth-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Brand Name -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-10 h-10 rounded-xl bg-earth-600 text-white flex items-center justify-center shadow-md">
+                        <!-- SVG Leaf Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight text-earth-900 dark:text-earth-300">BioCompost</span>
+                        <span class="block text-xs text-earth-600 dark:text-earth-400 font-medium">Edukasi & Solusi Organik</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-earth-800 dark:text-earth-200 bg-earth-100 dark:bg-slate-800">Beranda</button>
+                    <button onclick="switchTab('about')" id="nav-about" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-earth-100 dark:hover:bg-slate-800">Tentang Kompos</button>
+                    <button onclick="switchTab('kalkulator')" id="nav-kalkulator" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-earth-100 dark:hover:bg-slate-800">Kalkulator</button>
+                    <button onclick="switchTab('artikel')" id="nav-artikel" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-earth-100 dark:hover:bg-slate-800">Dampak & Solusi</button>
+                    <button onclick="switchTab('dokumentasi')" id="nav-dokumentasi" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-earth-100 dark:hover:bg-slate-800">Dokumentasi Foto</button>
+                    <button onclick="switchTab('tim')" id="nav-tim" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-300 hover:bg-earth-100 dark:hover:bg-slate-800">Tentang Kami</button>
+                </nav>
+
+                <!-- Dark Mode Toggle Button -->
+                <div class="flex items-center gap-3">
+                    <button id="theme-toggle" type="button" aria-label="Toggle Mode" class="p-2.5 text-slate-500 dark:text-slate-400 hover:bg-earth-100 dark:hover:bg-slate-800 rounded-xl focus:outline-none transition-colors border border-earth-200 dark:border-slate-700">
+                        <!-- Sun Icon (for dark mode) -->
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                        </svg>
+                        <!-- Moon Icon (for light mode) -->
+                        <svg id="theme-toggle-dark-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" type="button" class="md:hidden p-2.5 text-slate-500 dark:text-slate-400 hover:bg-earth-100 dark:hover:bg-slate-800 rounded-xl focus:outline-none border border-earth-200 dark:border-slate-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-earth-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('home')" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-earth-100 dark:hover:bg-slate-800">Beranda</button>
+            <button onclick="switchTab('about')" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-earth-100 dark:hover:bg-slate-800">Tentang Kompos</button>
+            <button onclick="switchTab('kalkulator')" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-earth-100 dark:hover:bg-slate-800">Kalkulator</button>
+            <button onclick="switchTab('artikel')" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-earth-100 dark:hover:bg-slate-800">Dampak & Solusi</button>
+            <button onclick="switchTab('dokumentasi')" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-earth-100 dark:hover:bg-slate-800">Dokumentasi Foto</button>
+            <button onclick="switchTab('tim')" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-earth-100 dark:hover:bg-slate-800">Tentang Kami</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- TAB 1: HOME -->
+        <section id="tab-home" class="tab-content active space-y-12">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-earth-700 to-earth-900 text-white p-8 md:p-12 lg:p-16 shadow-xl">
+                <div class="max-w-3xl space-y-6 relative z-10">
+                    <span class="inline-block px-3 py-1 bg-earth-600/60 backdrop-blur-sm border border-earth-400/30 rounded-full text-xs font-semibold tracking-wide uppercase text-earth-100">
+                        Pengelolaan Sampah Berkelanjutan
+                    </span>
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                        Ubah Sisa Makanan Menjadi Nutrisi Alami Bumi
+                    </h1>
+                    <p class="text-earth-100 text-base sm:text-lg leading-relaxed">
+                        Pengomposan adalah alur daur ulang biologis yang mengubah limbah organik rumah tangga dan tanaman menjadi bahan penyubur tanah kaya hara. Pelajari sainsnya dan hitung dampak positif Anda!
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="switchTab('kalkulator')" class="px-6 py-3 bg-earth-500 hover:bg-earth-400 text-white font-semibold rounded-xl shadow-md transition-all flex items-center gap-2">
+                            <span>Hitung Potensi Kompos</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                        <button onclick="switchTab('about')" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl backdrop-blur-md border border-white/20 transition-all">
+                            Pelajari Dasar Teori
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ringkasan Fitur / Info Card Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-earth-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-earth-100 dark:bg-earth-900/50 text-earth-700 dark:text-earth-300 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Proses Biologi Terkontrol</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Dekomposisi bahan organik oleh mikroorganisme seperti bakteri mesofilik, termofilik, dan aktinobakteria di bawah ketersediaan oksigen yang tepat.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-earth-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-earth-100 dark:bg-earth-900/50 text-earth-700 dark:text-earth-300 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Simulasi & Kalkulator</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Hitung potensi konversi sisa porsi makanan harian Anda menjadi pupuk kompos berguna serta potensi pengurangan jejak karbon.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl border border-earth-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-earth-100 dark:bg-earth-900/50 text-earth-700 dark:text-earth-300 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2v1a2 2 0 002 2h2.394M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Dampak & Solusi Nyata</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Mengurangi pembuangan sampah organik ke TPA yang memicu emisi gas metana (CH₄) berbahaya dengan 4 pilar solusi terstruktur.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ABOUT / DASAR TEORI WIKIPEDIA -->
+        <section id="tab-about" class="tab-content space-y-8">
+            <div class="border-b border-earth-200 dark:border-slate-800 pb-4">
+                <span class="text-xs font-semibold text-earth-600 dark:text-earth-400 uppercase tracking-wider">Referensi Sains & Ensiklopedia</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Pengomposan (Composting)</h2>
+            </div>
+
+            <!-- Content Card -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 border border-earth-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="prose dark:prose-invert max-w-none space-y-4 text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <p>
+                        <strong>Pengomposan</strong> adalah proses penguraian (dekomposisi) hayati secara aerobik dari bahan-bahan organik sisa seperti dedaunan, sisa tanaman, dan sampah dapur oleh mikroorganisme tanah (bakteri, aktinobakteri, dan jamur) di bawah kondisi lingkungan yang terkontrol. Hasil akhir dari proses ini dinamakan <em>kompos</em> atau <em>humus</em>.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white pt-4 border-t border-earth-100 dark:border-slate-700">1. Prinsip Utama & Keseimbangan C/N Ratio</h3>
+                    <p>
+                        Keberhasilan pembuatan kompos sangat bergantung pada rasio antara Karbon (C) dan Nitrogen (N). Rasio ideal untuk fermentasi alami adalah sekitar <strong>25:1 hingga 30:1</strong>.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+                        <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50">
+                            <h4 class="font-bold text-amber-900 dark:text-amber-300 mb-1">Bahan Cokelat (Kaya Karbon - C)</h4>
+                            <p class="text-sm text-amber-800 dark:text-amber-400">
+                                Berfungsi sebagai sumber energi mikroba. Contoh: Daun kering, jerami, serbuk gergaji, kardus bekas dicacah, dan ranting kecil.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50">
+                            <h4 class="font-bold text-emerald-900 dark:text-emerald-300 mb-1">Bahan Hijau (Kaya Nitrogen - N)</h4>
+                            <p class="text-sm text-emerald-800 dark:text-emerald-400">
+                                Berfungsi untuk sintesis protein & perkembangbiakan sel mikroba. Contoh: Sisa buah, sayuran dapur, ampas kopi, dan rumput segar.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white pt-4 border-t border-earth-100 dark:border-slate-700">2. Tahapan & Fase Temperatur Dekomposisi</h3>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Fase Mesofilik (20°C - 40°C):</strong> Tahap awal yang berlangsung beberapa hari pertama. Mikroorganisme mesofilik mengurai zat terlarut yang mudah rusak seperti gula dan asam amino.</li>
+                        <li><strong>Fase Termofilik (45°C - 65°C):</strong> Suhu melonjak naik akibat aktivitas metabolik tinggi. Bakteri termofilik memecah selulosa dan zat kompleks. Suhu tinggi ini efektif membunuh patogen berbahaya dan biji gulma.</li>
+                        <li><strong>Fase Pendinginan & Pematangan (Curing):</strong> Suhu kembali turun. Jamur dan makroorganisme (seperti cacing tanah) membantu membentuk struktur humus yang stabil dan tidak berbau sengat.</li>
+                    </ol>
+
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white pt-4 border-t border-earth-100 dark:border-slate-700">3. Parameter Penting Pengomposan</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm pt-2">
+                        <div class="p-3 bg-earth-50 dark:bg-slate-700/50 rounded-lg">
+                            <span class="font-bold block text-earth-800 dark:text-earth-300">Kelembaban</span>
+                            Optimum di angka 40% - 60%. Terlalu basah memicu kondisi anaerobik (bau), terlalu kering menghentikan dekomposisi.
+                        </div>
+                        <div class="p-3 bg-earth-50 dark:bg-slate-700/50 rounded-lg">
+                            <span class="font-bold block text-earth-800 dark:text-earth-300">Aerasi (Oksigen)</span>
+                            Pembalikan tumpukan kompos secara rutin untuk menyuplai O₂ bagi organisme aerob.
+                        </div>
+                        <div class="p-3 bg-earth-50 dark:bg-slate-700/50 rounded-lg">
+                            <span class="font-bold block text-earth-800 dark:text-earth-300">Ukuran Partikel</span>
+                            Pencacahan bahan organik memperluas area permukaan kontak bagi mikroorganisme pengurai.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: KALKULATOR PERHITUNGAN -->
+        <section id="tab-kalkulator" class="tab-content space-y-8">
+            <div class="border-b border-earth-200 dark:border-slate-800 pb-4">
+                <span class="text-xs font-semibold text-earth-600 dark:text-earth-400 uppercase tracking-wider">Simulasi Interaktif</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Kalkulator Konversi Kompos</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Control Panel (Left Slider) -->
+                <div class="lg:col-span-6 bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 border border-earth-200 dark:border-slate-700 shadow-sm space-y-6">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-earth-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        <span>Atur Jumlah Sisa Makanan</span>
+                    </h3>
+
+                    <!-- Slider 1: Porsi Makan -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label for="portion-slider" class="text-sm font-semibold text-slate-700 dark:text-slate-300">Jumlah Sisa Porsi Makanan Harian</label>
+                            <span class="text-lg font-bold text-earth-700 dark:text-earth-400"><span id="portion-val">3</span> Porsi</span>
+                        </div>
+                        <input id="portion-slider" type="range" min="1" max="50" value="3" oninput="updateCalculator()" class="w-full h-2.5 bg-earth-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-earth-600">
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Asumsi 1 porsi menyisa ± 200 gram limbah organik dapur (buah, sayur, sisa nasi).</p>
+                    </div>
+
+                    <!-- Slider 2: Durasi Pengumpulan -->
+                    <div class="space-y-3 pt-4 border-t border-earth-100 dark:border-slate-700">
+                        <div class="flex justify-between items-center">
+                            <label for="days-slider" class="text-sm font-semibold text-slate-700 dark:text-slate-300">Durasi Pengumpulan (Hari)</label>
+                            <span class="text-lg font-bold text-earth-700 dark:text-earth-400"><span id="days-val">30</span> Hari</span>
+                        </div>
+                        <input id="days-slider" type="range" min="1" max="365" value="30" oninput="updateCalculator()" class="w-full h-2.5 bg-earth-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-earth-600">
+                    </div>
+
+                    <!-- Preset Buttons -->
+                    <div class="pt-2 flex flex-wrap gap-2">
+                        <button onclick="setPreset(1, 7)" class="px-3 py-1.5 text-xs font-medium bg-earth-100 dark:bg-slate-700 hover:bg-earth-200 text-earth-800 dark:text-slate-200 rounded-lg">1 Orang (1 Minggu)</button>
+                        <button onclick="setPreset(4, 30)" class="px-3 py-1.5 text-xs font-medium bg-earth-100 dark:bg-slate-700 hover:bg-earth-200 text-earth-800 dark:text-slate-200 rounded-lg">Keluarga (1 Bulan)</button>
+                        <button onclick="setPreset(20, 30)" class="px-3 py-1.5 text-xs font-medium bg-earth-100 dark:bg-slate-700 hover:bg-earth-200 text-earth-800 dark:text-slate-200 rounded-lg">Kantin/Resto (1 Bulan)</button>
+                    </div>
+                </div>
+
+                <!-- Results Display (Right Panel) -->
+                <div class="lg:col-span-6 bg-earth-900 text-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-lg relative overflow-hidden">
+                    <div class="space-y-6 relative z-10">
+                        <h3 class="text-xl font-bold text-earth-200 border-b border-earth-800 pb-3">Estimasi Hasil Pengomposan</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-earth-950/60 p-4 rounded-xl border border-earth-800">
+                                <span class="text-xs text-earth-300 block mb-1">Total Sampah Terkumpul</span>
+                                <span class="text-2xl font-extrabold text-white" id="res-total-waste">18.0 kg</span>
+                            </div>
+                            <div class="bg-earth-950/60 p-4 rounded-xl border border-earth-800">
+                                <span class="text-xs text-earth-300 block mb-1">Estimasi Hasil Kompos Matang</span>
+                                <span class="text-2xl font-extrabold text-earth-400" id="res-compost-out">5.4 kg</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-2">
+                            <div class="flex justify-between items-center text-sm border-b border-earth-800/80 pb-2">
+                                <span class="text-earth-200">Pengurangan Emisi Karbon (CO₂e)</span>
+                                <span class="font-bold text-emerald-400" id="res-co2">45.0 kg CO₂</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm border-b border-earth-800/80 pb-2">
+                                <span class="text-earth-200">Potensi Pot Tanaman Tersuburkan</span>
+                                <span class="font-bold text-earth-300" id="res-pots">10 - 15 Pot</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm border-b border-earth-800/80 pb-2">
+                                <span class="text-earth-200">Estimasi Waktu Pematangan</span>
+                                <span class="font-bold text-earth-300">4 - 6 Minggu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-earth-800 text-xs text-earth-300 relative z-10">
+                        *Catatan: Konversi memperhitungkan penurunan volume air hingga 60-70% selama proses dekomposisi aerobik.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ARTIKEL & DAMPAK / SOLUSI (REVISI SOLUSI LENGKAP) -->
+        <section id="tab-artikel" class="tab-content space-y-8">
+            <div class="border-b border-earth-200 dark:border-slate-800 pb-4">
+                <span class="text-xs font-semibold text-earth-600 dark:text-earth-400 uppercase tracking-wider">Analisis Kompleks & Tindakan Nyata</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Dampak Sampah Organik & 4 Pilar Solusi Praktis</h2>
+            </div>
+
+            <!-- Card Dampak Negatif -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 border border-red-200 dark:border-red-950 shadow-sm space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 rounded-xl">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Dampak Krisis Lingkungan akibat Penumpukan Limbah Makanan</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Masalah ekologis utama ketika sampah organik tidak diolah dengan benar</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                    <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40">
+                        <h4 class="font-bold text-red-900 dark:text-red-300 text-sm mb-1">Emisi Gas Metana (CH₄)</h4>
+                        <p class="text-xs text-red-800 dark:text-red-400 leading-relaxed">
+                            Sampah organik yang menumpuk padat tanpa oksigen di TPA mengalami fermentasi anaerobik yang melepas gas metana 28-36 kali lebih berbahaya dibanding karbon dioksida.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40">
+                        <h4 class="font-bold text-red-900 dark:text-red-300 text-sm mb-1">Pencemaran Air Lindi</h4>
+                        <p class="text-xs text-red-800 dark:text-red-400 leading-relaxed">
+                            Cairan busuk (air lindi) beracun bereaksi dengan logam berat TPA lalu merembes ke air tanah serta sungai, merusak ekosistem dan mengancam air minum masyarakat.
+                        </p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40">
+                        <h4 class="font-bold text-red-900 dark:text-red-300 text-sm mb-1">Krisisis Kapasitas TPA</h4>
+                        <p class="text-xs text-red-800 dark:text-red-400 leading-relaxed">
+                            Lebih dari 50% komposisi sampah di TPA Indonesia adalah sisa makanan. Penumpukan ini memperpendek umur operasional TPA secara signifikan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Solusi -->
+            <div class="pt-4">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">4 Pilar Solusi Penanganan Komprehensif</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Strategi bertahap mulai dari penekanan jumlah limbah hingga pemanfaatan daur ulang biologis.</p>
+            </div>
+
+            <!-- Grid 4 Pilar Solusi -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Pilar 1 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-earth-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-earth-600 text-white font-bold flex items-center justify-center text-sm">1</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Pencegahan Sisa Makanan (Food Waste Prevention)</h4>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Langkah awal paling efektif adalah mengurangi potensi timbulan sampah dari sumbernya melalui manajemen konsumsi yang bijak.
+                    </p>
+                    <div class="bg-earth-50 dark:bg-slate-700/50 p-3 rounded-xl text-xs space-y-1 text-slate-700 dark:text-slate-200">
+                        <span class="font-semibold block text-earth-800 dark:text-earth-300">Aksi Nyata Sehari-hari:</span>
+                        <ul class="list-disc pl-4 space-y-0.5">
+                            <li>Belanja bahan pangan sesuai perencanaan menu mingguan.</li>
+                            <li>Penerapan sistem FIFO (First In, First Out) dalam kulkas.</li>
+                            <li>Mengambil porsi makanan secukupnya saat makan.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pilar 2 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-earth-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-earth-600 text-white font-bold flex items-center justify-center text-sm">2</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Pengomposan Mandiri Rumahan</h4>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Mengolah sisa bahan dapur organik mentah maupun matang menjadi nutrisi hara tanah di pekarangan rumah sendiri.
+                    </p>
+                    <div class="bg-earth-50 dark:bg-slate-700/50 p-3 rounded-xl text-xs space-y-1 text-slate-700 dark:text-slate-200">
+                        <span class="font-semibold block text-earth-800 dark:text-earth-300">Metode Pilihan Praktis:</span>
+                        <ul class="list-disc pl-4 space-y-0.5">
+                            <li><strong>Keranjang Takakura:</strong> Metode aerasi tanpa bau cocok untuk lahan sempit.</li>
+                            <li><strong>Lubang Biopori:</strong> Solusi meningkatkan daya serap air hujan sekaligus tempat kompos.</li>
+                            <li><strong>Komposter Ember Tumpuk:</strong> Memanfaatkan mikroba lokal dan menghasilkan pupuk cair (POC).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pilar 3 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-earth-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-earth-600 text-white font-bold flex items-center justify-center text-sm">3</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Bank Sampah & Pengomposan Komunitas</h4>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Penanganan sampah organik skala kawasan (RT/RW/Sekolah) untuk mengolah volume sampah yang lebih besar.
+                    </p>
+                    <div class="bg-earth-50 dark:bg-slate-700/50 p-3 rounded-xl text-xs space-y-1 text-slate-700 dark:text-slate-200">
+                        <span class="font-semibold block text-earth-800 dark:text-earth-300">Skema Komunitas:</span>
+                        <ul class="list-disc pl-4 space-y-0.5">
+                            <li>Penyediaan tempat sampah terpisah (Organik & Anorganik) di titik kumpul warga.</li>
+                            <li>Pengolahan metode *Windrow Composting* di area komunal desa/sekolah.</li>
+                            <li>Hasil kompos dibagikan kembali untuk penghijauan lingkungan taman bersama.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pilar 4 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-earth-200 dark:border-slate-700 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-earth-600 text-white font-bold flex items-center justify-center text-sm">4</span>
+                        <h4 class="font-bold text-slate-900 dark:text-white">Biokonversi Larva BSF (Black Soldier Fly)</h4>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Menggunakan larva lalat tentara hitam (Maggot BSF) untuk menguraikan sampah organik basah dengan sangat cepat.
+                    </p>
+                    <div class="bg-earth-50 dark:bg-slate-700/50 p-3 rounded-xl text-xs space-y-1 text-slate-700 dark:text-slate-200">
+                        <span class="font-semibold block text-earth-800 dark:text-earth-300">Keunggulan BSF:</span>
+                        <ul class="list-disc pl-4 space-y-0.5">
+                            <li>Mampu menguraikan sampah makanan 3-5 kali lebih cepat dibanding bakteri pengurai biasa.</li>
+                            <li>Larva matang berprotein tinggi dapat dimanfaatkan sebagai pakan ikan & unggas.</li>
+                            <li>Sisa kotoran maggot (Kasgot) menjadi pupuk organik bermutu tinggi.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: DOKUMENTASI FOTO (REVISI FOTO PROSES & HASIL REALISTIS) -->
+        <section id="tab-dokumentasi" class="tab-content space-y-8">
+            <div class="border-b border-earth-200 dark:border-slate-800 pb-4">
+                <span class="text-xs font-semibold text-earth-600 dark:text-earth-400 uppercase tracking-wider">Galeri Visual Lapangan</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Dokumentasi Foto Proses & Hasil Kompos</h2>
+            </div>
+
+            <p class="text-sm text-slate-600 dark:text-slate-300 -mt-4">
+                Dokumentasi tahap demi tahap pelaksanaan pembuatan kompos aerobik dari limbah sayuran dan buah dapur hingga menjadi tanah humus yang subur.
+            </p>
+
+            <!-- Grid 6 Foto Dokumentasi -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Foto 1 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div class="relative h-48 bg-slate-200 overflow-hidden">
+                        <img src="foto 1.jpg">
+                        <span class="absolute top-3 left-3 bg-earth-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Tahap 1</span>
+                    </div>
+                    <div class="p-5 space-y-2 flex-grow">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Pemilahan Sampah Dapur (Bahan Hijau)</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Mengumpulkan sisa potongan kulit buah, sayuran mentah, dan ampas kopi dari dapur rumah tangga. Memastikan bahan bebas dari plastik, stereoform, atau minyak kental.
+                        </p>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <span class="inline-block text-[11px] font-semibold text-earth-700 dark:text-earth-300 bg-earth-100 dark:bg-slate-700 px-2.5 py-1 rounded-lg">Kandungan: High Nitrogen (N)</span>
+                    </div>
+                </div>
+
+                <!-- Foto 2 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div class="relative h-48 bg-slate-200 overflow-hidden">
+                        <img src="foto 2'.jpeg">
+                        <span class="absolute top-3 left-3 bg-earth-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Tahap 2</span>
+                    </div>
+                    <div class="p-5 space-y-2 flex-grow">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Pencacahan Bahan Organik</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Mencacah sisa bahan sayuran dan daun-daunan menjadi potongan kecil berukuran 2-4 cm. Pencacahan bertujuan memperluas bidang sentuh mikroorganisme pengurai.
+                        </p>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <span class="inline-block text-[11px] font-semibold text-earth-700 dark:text-earth-300 bg-earth-100 dark:bg-slate-700 px-2.5 py-1 rounded-lg">Ukuran Optimal: 2 - 4 cm</span>
+                    </div>
+                </div>
+
+                <!-- Foto 3 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div class="relative h-48 bg-slate-200 overflow-hidden">
+                        <img src="foto 3.jpg";">
+                        <span class="absolute top-3 left-3 bg-earth-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Tahap 3</span>
+                    </div>
+                    <div class="p-5 space-y-2 flex-grow">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Penyusunan Layering C/N Ratio</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Membuat lapisan berlapis di wadah komposter: selapis bahan cokelat (daun kering/kardus cacah) berselang-seling dengan selapis bahan hijau sisa dapur.
+                        </p>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <span class="inline-block text-[11px] font-semibold text-earth-700 dark:text-earth-300 bg-earth-100 dark:bg-slate-700 px-2.5 py-1 rounded-lg">Rasio Ideal: 2 Lapisan C : 1 N</span>
+                    </div>
+                </div>
+
+                <!-- Foto 4 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div class="relative h-48 bg-slate-200 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80" alt="Pengawasan Kelembapan & Pembalikan" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/600x400/597746/ffffff?text=4.+Pengawasan+Kelembapan';">
+                        <span class="absolute top-3 left-3 bg-earth-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Tahap 4</span>
+                    </div>
+                    <div class="p-5 space-y-2 flex-grow">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Pengawasan Kelembapan & Pembalikan</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Pembalikan rutin dilakukan 3 hari sekali untuk memasukkan pasokan oksigen O₂ segar. Kelembapan dijaga sebasah spons terperas (sekitar 50%).
+                        </p>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <span class="inline-block text-[11px] font-semibold text-earth-700 dark:text-earth-300 bg-earth-100 dark:bg-slate-700 px-2.5 py-1 rounded-lg">Suhu Mesofilik: 40°C - 55°C</span>
+                    </div>
+                </div>
+
+                <!-- Foto 5 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div class="relative h-48 bg-slate-200 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=600&q=80" alt="Hasil Kompos Matang Siap Panen" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/600x400/597746/ffffff?text=5.+Hasil+Kompos+Matang';">
+                        <span class="absolute top-3 left-3 bg-earth-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Tahap 5</span>
+                    </div>
+                    <div class="p-5 space-y-2 flex-grow">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Hasil Kompos Matang Siap Panen</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Setelah 4-5 minggu, kompos matang memiliki tekstur remah berwarna cokelat kehitaman, aroma segar seperti tanah hutan, dan suhu dingin stabil.
+                        </p>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <span class="inline-block text-[11px] font-semibold text-earth-700 dark:text-earth-300 bg-earth-100 dark:bg-slate-700 px-2.5 py-1 rounded-lg">Status: Matang Sempurna</span>
+                    </div>
+                </div>
+
+                <!-- Foto 6 -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div class="relative h-48 bg-slate-200 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=600&q=80" alt="Aplikasi Pupuk Kompos pada Tanaman" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='https://placehold.co/600x400/597746/ffffff?text=6.+Aplikasi+pada+Tanaman';">
+                        <span class="absolute top-3 left-3 bg-earth-900/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">Tahap 6</span>
+                    </div>
+                    <div class="p-5 space-y-2 flex-grow">
+                        <h4 class="font-bold text-slate-900 dark:text-white text-base">Aplikasi Pupuk Kompos pada Tanaman</h4>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Kompos matang dicampurkan ke media tanam pot atau ditabur di sekitar perakaran tanaman hias dan sayuran untuk meningkatkan kesuburan tanah.
+                        </p>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <span class="inline-block text-[11px] font-semibold text-earth-700 dark:text-earth-300 bg-earth-100 dark:bg-slate-700 px-2.5 py-1 rounded-lg">Manfaat: Memperbaiki Struktur Tanah</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Petunjuk Informasi Pengalaman Lapangan -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl border border-earth-200 dark:border-slate-700 space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white">Kesimpulan Hasil Uji Pengomposan</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Berdasarkan dokumentasi percobaan yang dilakukan selama 30 hari, pengolahan sisa makanan sebanyak 15 kg menghasilkan sekitar 4,5 kg pupuk kompos berkualitas tinggi. Penggunaan kompos ini secara langsung meningkatkan kapasitas retensi air tanah serta mempercepat pertumbuhan vegetatif daun tanaman hias dan sayuran rumah tangga.
+                </p>
+            </div>
+        </section>
+
+        <!-- TAB 6: TENTANG KAMI (TIM ANGGOTA & SEKOLAH) -->
+        <section id="tab-tim" class="tab-content space-y-8">
+            <div class="border-b border-earth-200 dark:border-slate-800 pb-4">
+                <span class="text-xs font-semibold text-earth-600 dark:text-earth-400 uppercase tracking-wider">Identitas Pengembang</span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-1">Tentang Tim Kami</h2>
+            </div>
+
+            <!-- Informasi Sekolah Container -->
+            <div class="bg-earth-900 text-white p-6 sm:p-8 rounded-2xl shadow-md space-y-3">
+                <span class="text-xs font-medium text-earth-300 uppercase tracking-wider">Institusi Pendidikan</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white" id="school-name">SMKN 4 Kuningan</h3>
+                <p class="text-sm text-earth-200 flex items-start gap-2">
+                    <svg class="w-4 h-4 mt-0.5 text-earth-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span> Jl. Raya Cikeusik No. 73, Desa Cikeusik, Kecamatan Cidahu, Kabupaten Kuningan, Jawa Barat 45595.</span>
+                </p>
+                <div class="pt-2 text-xs text-earth-300">
+                    Kelas Proyek: <span class="font-semibold text-white">XI PPLG / BioCompost</span>
+                </div>
+            </div>
+
+            <!-- 3 Anggota Tim (No Photo - Using Minimal SVG Vectors) -->
+            <div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Anggota Tim Proyek</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Anggota 1 -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col items-center text-center space-y-4">
+                        <!-- Minimal Avatar Vector -->
+                        <div class="w-20 h-20 rounded-full bg-earth-100 dark:bg-slate-700 border-2 border-earth-300 dark:border-slate-600 flex items-center justify-center text-earth-700 dark:text-earth-300">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base">Siska Aryani</h4>
+                            <span class="text-xs font-medium text-earth-600 dark:text-earth-400 block mt-0.5">Ketua Tim</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-2">Kelas: XI PPLG 1</span>
+                        </div>
+                    </div>
+
+                    <!-- Anggota 2 -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col items-center text-center space-y-4">
+                        <!-- Minimal Avatar Vector -->
+                        <div class="w-20 h-20 rounded-full bg-earth-100 dark:bg-slate-700 border-2 border-earth-300 dark:border-slate-600 flex items-center justify-center text-earth-700 dark:text-earth-300">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base">Chika Fitriyani</h4>
+                            <span class="text-xs font-medium text-earth-600 dark:text-earth-400 block mt-0.5">Peneliti Data</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-2">Kelas: Xi PPLG 1</span>
+                        </div>
+                    </div>
+
+                    <!-- Anggota 3 -->
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-earth-200 dark:border-slate-700 shadow-sm flex flex-col items-center text-center space-y-4">
+                        <!-- Minimal Avatar Vector -->
+                        <div class="w-20 h-20 rounded-full bg-earth-100 dark:bg-slate-700 border-2 border-earth-300 dark:border-slate-600 flex items-center justify-center text-earth-700 dark:text-earth-300">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-base">Siti Nur Wasiah</h4>
+                            <span class="text-xs font-medium text-earth-600 dark:text-earth-400 block mt-0.5">Uji Lapangan</span>
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mt-2">Kelas: XI PPLG 1<span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white dark:bg-slate-900 border-t border-earth-200 dark:border-slate-800 py-6 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 dark:text-slate-400 space-y-2">
+            <p>&copy; 2026 KomposKita. Proyek Inovasi Pengelolaan Sampah Organik Sekolah.</p>
+            <p class="text-earth-600 dark:text-earth-400">Dirancang untuk edukasi kelestarian lingkungan dan pengurangan jejak karbon.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS -->
+    <script>
+        // Tab Navigation Logic
+        function switchTab(tabId) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show current tab
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // Update navigation button active styles (Desktop)
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('text-earth-800', 'font-bold', 'bg-earth-100', 'dark:text-earth-200', 'dark:bg-slate-800');
+                btn.classList.add('text-slate-600', 'dark:text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('nav-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'dark:text-slate-300');
+                activeBtn.classList.add('text-earth-800', 'font-bold', 'bg-earth-100', 'dark:text-earth-200', 'dark:bg-slate-800');
+            }
+
+            // Close mobile menu if open
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Mobile Menu Visibility
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // REVISI DEFAULT THEME: Selalu default ke LIGHT MODE saat pertama kali dibuka
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Check theme preference in localStorage. Default to 'light' if not explicitly set to 'dark'
+        const storedTheme = localStorage.getItem('color-theme');
+
+        if (storedTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+            darkIcon.classList.add('hidden');
+        } else {
+            // Default: Light mode
+            document.documentElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+            lightIcon.classList.add('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            lightIcon.classList.toggle('hidden');
+            darkIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+
+        // Calculator Interactive Logic
+        function updateCalculator() {
+            const portionInput = document.getElementById('portion-slider').value;
+            const daysInput = document.getElementById('days-slider').value;
+
+            // Display Slider Values
+            document.getElementById('portion-val').innerText = portionInput;
+            document.getElementById('days-val').innerText = daysInput;
+
+            // Calculation Constants
+            // 1 portion waste = approx 0.2 kg (200 grams)
+            const wastePerPortionKg = 0.2; 
+            const totalWasteKg = portionInput * wastePerPortionKg * daysInput;
+            
+            // Compost output conversion rate (30% of wet waste volume after decomposition)
+            const compostYieldKg = totalWasteKg * 0.30;
+
+            // CO2 equivalent reduction rate (approx 2.5 kg CO2e saved per kg waste diverted from landfill)
+            const co2SavedKg = totalWasteKg * 2.5;
+
+            // Estimated pots of plants (approx 0.4 kg per medium pot)
+            const potsCountMin = Math.floor(compostYieldKg / 0.5);
+            const potsCountMax = Math.ceil(compostYieldKg / 0.35);
+
+            // Update UI elements
+            document.getElementById('res-total-waste').innerText = totalWasteKg.toFixed(1) + ' kg';
+            document.getElementById('res-compost-out').innerText = compostYieldKg.toFixed(1) + ' kg';
+            document.getElementById('res-co2').innerText = co2SavedKg.toFixed(1) + ' kg CO₂';
+            document.getElementById('res-pots').innerText = `${potsCountMin} - ${potsCountMax} Pot`;
+        }
+
+        function setPreset(portions, days) {
+            document.getElementById('portion-slider').value = portions;
+            document.getElementById('days-slider').value = days;
+            updateCalculator();
+        }
+
+        // Initialize Calculator on load
+        window.onload = function() {
+            updateCalculator();
+        };
+    </script>
+</body>
+</html>
